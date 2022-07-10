@@ -1,8 +1,8 @@
 $(function(){
 
     const appendBook = function(data){
-        var bookCode = '<h4>' + data.name + '</h4>' +
-            'Год выпуска: ' + data.year;
+        var bookCode = '<a href="#" class="book-link" data-id="'
+         + data.id + '">' + data.name + '</a>';
         $('#book-list')
             .append('<div>' + bookCode + '</div>');
     };
@@ -25,6 +25,27 @@ $(function(){
         if(event.target === this) {
             $(this).css('display', 'none');
         }
+    });
+
+    //Getting book
+    $(document).on('click', '.book-link', function(){
+        var bookId = $(this).data('id');
+        $.ajax({
+            method: "GET",
+            url: '/books/' + bookId,
+            success: function(response)
+            {
+                var code = '<span>Год выпуска:' + response.year + '</span>';
+                $(this).parent().append(code);
+            },
+            error: function(response)
+            {
+                if(response.status == 404) {
+                    alert('Книга не найдена!');
+                }
+            }
+        });
+        return false;
     });
 
     //Adding book
